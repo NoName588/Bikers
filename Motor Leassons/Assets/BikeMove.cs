@@ -17,14 +17,16 @@ public class BikeMove : MonoBehaviour
     [Header("Transmisión")]
     public int currentGear = 1;
     public int maxGear = 7;
-    public float[] gearRatios = { 0f, 0f, 0.15f, 0.25f, 0.4f, 0.6f, 0.8f, 1f };
-    public float[] gearTorques = { 0f, 0.9f, 0.8f, 0.6f, 0.45f, 0.35f, 0.25f };
+
+    // Arrays consistentes (mismo tamaño: 8 elementos → 0 = neutro)
+    public float[] gearRatios = { 0f, 0.15f, 0.25f, 0.4f, 0.6f, 0.8f, 1f, 1.2f };
+    public float[] gearTorques = { 0f, 0.9f, 0.8f, 0.6f, 0.45f, 0.35f, 0.25f, 0.2f };
 
     [Header("Manubrio")]
-    public Transform handlebar;       
-    public float maxHandlebarTurn = 30f; 
+    public Transform handlebar;
+    public float maxHandlebarTurn = 30f;
 
-    private float currentSpeed = 0f;
+    private float currentSpeed = 0f;   // en m/s
     private float currentRPM;
     private Rigidbody rb;
 
@@ -61,7 +63,8 @@ public class BikeMove : MonoBehaviour
         float gearMaxSpeed = maxSpeed * gearRatios[currentGear];
         float gearTorque = gearTorques[currentGear];
 
-        if (Input.GetKey(KeyCode.W))
+        // --- ACELERACIÓN DE VELOCIDAD ---
+        if (Input.GetKey(KeyCode.W) && currentGear > 0) // Solo si hay marcha engranada
         {
             if (currentSpeed < gearMaxSpeed && !(currentGear > 1 && currentSpeed < 5f))
                 currentSpeed += acceleration * gearTorque * Time.deltaTime;
@@ -77,11 +80,44 @@ public class BikeMove : MonoBehaviour
             currentSpeed = Mathf.Lerp(currentSpeed, 0f, naturalDeceleration * Time.deltaTime);
         }
 
-        currentSpeed = Mathf.Clamp(currentSpeed, 0f, gearMaxSpeed);
+        // Ajuste progresivo de velocidad al cambiar de marcha
+        if (currentSpeed > gearMaxSpeed)
+        {
+            // En vez de recortar de golpe, reducimos progresivamente con freno motor
+            currentSpeed = Mathf.Lerp(currentSpeed, gearMaxSpeed, Time.deltaTime * 2f);
+        }
 
-        if (!(currentGear > 1 && currentSpeed < 5f))
-            currentRPM = Mathf.Lerp(currentRPM, (currentSpeed / gearMaxSpeed) * maxRPM, Time.deltaTime * 5f);
+        // --- CÁLCULO DE RPM ---
+        if (currentGear == 0) // ✅ En neutro → RPM solo responde al acelerador
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                // Revoluciona libre hasta el máximo
+                currentRPM = Mathf.Lerp(currentRPM, maxRPM, Time.deltaTime * 3f);
+            }
+            else
+            {
+                // Sin acelerar → vuelve al ralentí
+                currentRPM = Mathf.Lerp(currentRPM, 1000f, Time.deltaTime * 2f);
+            }
+        }
+        else // ✅ En marcha engranada → RPM depende de la velocidad
+        {
+            if (!(currentGear > 1 && currentSpeed < 5f))
+            {
+                float normalizedSpeed = Mathf.Clamp01(currentSpeed / gearMaxSpeed);
+                float targetRPM = Mathf.Lerp(1000f, maxRPM, normalizedSpeed);
+
+                currentRPM = Mathf.Lerp(currentRPM, targetRPM, Time.deltaTime * 5f);
+            }
+            else
+            {
+                // Parado con marcha engranada → manten RPM en ralentí
+                currentRPM = Mathf.Lerp(currentRPM, 1000f, Time.deltaTime * 2f);
+            }
+        }
     }
+
 
     private void HandleSteering()
     {
@@ -103,17 +139,15 @@ public class BikeMove : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
     }
 
-    private void UpdateHandlebar() //Ayuda de Chat mamacita hermosa divina
+    private void UpdateHandlebar()
     {
         if (handlebar != null)
         {
             float turnInput = Input.GetAxis("Horizontal");
             float speedFactor = Mathf.Clamp01(currentSpeed / maxSpeed);
 
-            // A baja velocidad, gira más el manubrio, a alta velocidad menos
             float handlebarAngle = turnInput * Mathf.Lerp(maxHandlebarTurn, maxHandlebarTurn / 5f, speedFactor);
 
-            // Aplicar rotación en Z sin alterar X ni Y originales
             Vector3 localEuler = handlebar.localEulerAngles;
             localEuler.z = handlebarAngle;
             handlebar.localEulerAngles = localEuler;
@@ -126,14 +160,13 @@ public class BikeMove : MonoBehaviour
         rb.MovePosition(rb.position + forwardMovement);
     }
 
-    void OnGUI() // Recomendacion de la mamacita, luego la borro cuando tenga el Velocimentro, RPM y UI de cambios
+    void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 200, 20), "Gear: " + currentGear);
-        GUI.Label(new Rect(10, 30, 200, 20), "Speed: " + currentSpeed.ToString("F1") + " km/h");
-        GUI.Label(new Rect(10, 50, 200, 20), "RPM: " + currentRPM.ToString("F0"));
+        float speedKmh = currentSpeed * 3.6f; // ✅ conversión correcta m/s → km/h
 
+        GUI.Label(new Rect(10, 10, 200, 20), "Gear: " + currentGear);
+        GUI.Label(new Rect(10, 30, 200, 20), "Speed: " + speedKmh.ToString("F1") + " km/h");
+        GUI.Label(new Rect(10, 50, 200, 20), "RPM: " + currentRPM.ToString("F0"));
     }
 }
-
-
 
