@@ -2525,7 +2525,7 @@ Transform:
   m_GameObject: {fileID: 83198505}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22.176636, y: -1.015, z: 17.984474}
+  m_LocalPosition: {x: -22.176636, y: 0.10900009, z: 17.984474}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3500,7 +3500,7 @@ Transform:
   m_GameObject: {fileID: 119998669}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30.379738, y: -1, z: 5.3443985}
+  m_LocalPosition: {x: 30.379738, y: 0.12400007, z: 5.3443985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3518,7 +3518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b580432b9550eb84586838e5cb130a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedLimit: 5
+  speedLimit: 1
   nextCheckpoints:
   - {fileID: 803939284}
 --- !u!23 &119998672
@@ -4468,7 +4468,7 @@ Transform:
   m_GameObject: {fileID: 139008200}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30.088165, y: -1.015, z: 25.291954}
+  m_LocalPosition: {x: 30.088165, y: 0.10900009, z: 25.291954}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4486,7 +4486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b580432b9550eb84586838e5cb130a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedLimit: 5
+  speedLimit: 1
   nextCheckpoints:
   - {fileID: 200708920}
 --- !u!23 &139008203
@@ -5640,7 +5640,7 @@ Transform:
   m_GameObject: {fileID: 200708919}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.3151093, y: -1.015, z: 25.101738}
+  m_LocalPosition: {x: -3.3151093, y: 0.10900009, z: 25.101738}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10711,7 +10711,7 @@ Transform:
   m_GameObject: {fileID: 414248317}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05, y: 0.237, z: 1.94}
+  m_LocalPosition: {x: 0.05, y: 0.508, z: 1.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18531,7 +18531,7 @@ Transform:
   m_GameObject: {fileID: 681895181}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -19.173187, y: -1.015, z: -14.050209}
+  m_LocalPosition: {x: -19.173187, y: 0.10900009, z: -14.050209}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20558,7 +20558,7 @@ Transform:
   m_GameObject: {fileID: 757100524}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.37265, y: -1.015, z: -7.8965073}
+  m_LocalPosition: {x: -4.37265, y: 0.10900009, z: -7.8965073}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -21245,7 +21245,7 @@ Transform:
   m_GameObject: {fileID: 803939283}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 33.86841, y: -1.015, z: 15.886757}
+  m_LocalPosition: {x: 33.86841, y: 0.10900009, z: 15.886757}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -21263,7 +21263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b580432b9550eb84586838e5cb130a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedLimit: 5
+  speedLimit: 1
   nextCheckpoints:
   - {fileID: 139008201}
 --- !u!23 &803939286
@@ -24772,7 +24772,7 @@ Transform:
   m_GameObject: {fileID: 955730997}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.096542, y: -1, z: 0.7177124}
+  m_LocalPosition: {x: 20.096542, y: 0.77, z: 0.7177124}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -24790,7 +24790,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b580432b9550eb84586838e5cb130a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedLimit: 5
+  speedLimit: 1
   nextCheckpoints:
   - {fileID: 119998670}
 --- !u!23 &955731000
@@ -34537,7 +34537,7 @@ Transform:
   m_GameObject: {fileID: 1338609335}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -27.1707, y: -1.015, z: -9.540611}
+  m_LocalPosition: {x: -27.1707, y: 0.10900009, z: -9.540611}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43288,7 +43288,7 @@ Transform:
   m_GameObject: {fileID: 1631115181}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -30.501007, y: -1, z: 4.8754883}
+  m_LocalPosition: {x: -30.501007, y: 0.12400007, z: 4.8754883}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -51166,7 +51166,7 @@ Transform:
   m_GameObject: {fileID: 1914892610}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.412796, y: -1.015, z: -12.887291}
+  m_LocalPosition: {x: -8.412796, y: 0.10900009, z: -12.887291}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -53719,7 +53719,7 @@ Transform:
   m_GameObject: {fileID: 2016971963}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.83, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -56516,6 +56516,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3784050324534126441}
+  - component: {fileID: 3784050324534126442}
   m_Layer: 0
   m_Name: Jimmy
   m_TagString: Untagged
@@ -57174,6 +57175,33 @@ Transform:
   - {fileID: 414248318}
   m_Father: {fileID: 1757706237354862150}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &3784050324534126442
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111519220496498237}
+  serializedVersion: 4
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &3813016467421305995
 Transform:
   m_ObjectHideFlags: 0
@@ -58065,7 +58093,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1757706237354862150}
   - component: {fileID: 7392164935756640372}
-  - component: {fileID: 7392164935756640374}
   m_Layer: 0
   m_Name: CarType1
   m_TagString: Untagged
@@ -58093,7 +58120,7 @@ MonoBehaviour:
   frontLeftCollider: {fileID: 2928154317456577456}
   rearRightCollider: {fileID: 6625546076378675427}
   rearLeftCollider: {fileID: 865434340786021864}
-  nextCheckpoint: {fileID: 119998670}
+  nextCheckpoint: {fileID: 955730998}
   checks:
   - {fileID: 1355232851}
   - {fileID: 1935024286}
@@ -58104,41 +58131,14 @@ MonoBehaviour:
   seenLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  kmh: 0
+  kmh: 1
   speedLimit: 0
   distanceFromObjects: 2
   recklessnessThreshold: 0
   despawnForFlippingOver: 1
   taxiMode: 0
-  acceleration: 10000
+  acceleration: 1000
   breaking: 100000
---- !u!54 &7392164935756640374
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7392164935756640371}
-  serializedVersion: 4
-  m_Mass: 500
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!33 &7501811464698425977
 MeshFilter:
   m_ObjectHideFlags: 0
