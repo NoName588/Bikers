@@ -9,6 +9,13 @@ public class BikeMove : MonoBehaviour
     public float naturalDeceleration = 2f;
     public float maxRPM = 10000f;
 
+    [Header("Temperatura del motor")]
+    public float engineTemperature = 70f;   // °C inicial (ralentí normal)
+    public float minTemperature = 60f;      // Temperatura mínima (reposo)
+    public float maxTemperature = 120f;     // Límite peligroso
+    public float heatingRate = 0.05f;       // Cuánto sube por unidad de esfuerzo
+    public float coolingRate = 0.02f;       // Cuánto baja por segundo en reposo
+
     [Header("Giro")]
     public float maxTurnSpeed = 80f;
     public float minTurnSpeed = 20f;
@@ -43,6 +50,7 @@ public class BikeMove : MonoBehaviour
         HandleSteering();
         UpdateLean();
         UpdateHandlebar();
+        UpdateEngineTemperature(); // ✅ ahora también se actualiza temperatura
     }
 
     void FixedUpdate()
@@ -83,7 +91,6 @@ public class BikeMove : MonoBehaviour
         // Ajuste progresivo de velocidad al cambiar de marcha
         if (currentSpeed > gearMaxSpeed)
         {
-            // En vez de recortar de golpe, reducimos progresivamente con freno motor
             currentSpeed = Mathf.Lerp(currentSpeed, gearMaxSpeed, Time.deltaTime * 2f);
         }
 
@@ -92,12 +99,10 @@ public class BikeMove : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.W))
             {
-                // Revoluciona libre hasta el máximo
                 currentRPM = Mathf.Lerp(currentRPM, maxRPM, Time.deltaTime * 3f);
             }
             else
             {
-                // Sin acelerar → vuelve al ralentí
                 currentRPM = Mathf.Lerp(currentRPM, 1000f, Time.deltaTime * 2f);
             }
         }
@@ -112,12 +117,10 @@ public class BikeMove : MonoBehaviour
             }
             else
             {
-                // Parado con marcha engranada → manten RPM en ralentí
                 currentRPM = Mathf.Lerp(currentRPM, 1000f, Time.deltaTime * 2f);
             }
         }
     }
-
 
     private void HandleSteering()
     {
@@ -160,6 +163,33 @@ public class BikeMove : MonoBehaviour
         rb.MovePosition(rb.position + forwardMovement);
     }
 
+    // ✅ SISTEMA DE TEMPERATURA DEL MOTOR
+    private void UpdateEngineTemperature()
+    {
+        // Normalizamos esfuerzo (0 a 1) según RPM
+        float effort = Mathf.InverseLerp(1000f, maxRPM, currentRPM);
+
+        if (Input.GetKey(KeyCode.W) && currentGear > 0)
+        {
+            // Acelerar → sube la temperatura
+            engineTemperature += heatingRate * effort * Time.deltaTime * 100f;
+        }
+        else
+        {
+            // Enfriamiento natural
+            engineTemperature -= coolingRate * Time.deltaTime * 100f;
+        }
+
+        // Clamps
+        engineTemperature = Mathf.Clamp(engineTemperature, minTemperature, maxTemperature + 20f);
+
+        // Si se excede el límite peligroso
+        if (engineTemperature >= maxTemperature)
+        {
+            Debug.LogWarning("⚠️ El motor está en sobrecalentamiento! (" + engineTemperature.ToString("F1") + " °C)");
+        }
+    }
+
     void OnGUI()
     {
         float speedKmh = currentSpeed * 3.6f; // ✅ conversión correcta m/s → km/h
@@ -167,6 +197,8 @@ public class BikeMove : MonoBehaviour
         GUI.Label(new Rect(10, 10, 200, 20), "Gear: " + currentGear);
         GUI.Label(new Rect(10, 30, 200, 20), "Speed: " + speedKmh.ToString("F1") + " km/h");
         GUI.Label(new Rect(10, 50, 200, 20), "RPM: " + currentRPM.ToString("F0"));
+        GUI.Label(new Rect(10, 70, 200, 20), "Temp: " + engineTemperature.ToString("F1") + " °C"); // ✅ Temperatura
     }
 }
+
 
