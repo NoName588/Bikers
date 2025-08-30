@@ -22,6 +22,9 @@ public class DialogueSystem : MonoBehaviour
     public bool inactivarAlFinal = false;       // 🔹 Si se inactiva al final
     public GameObject objectToDisableAtEnd;     // 🔹 Objeto que se desactiva al acabar el diálogo/pregunta
 
+    public bool activarAlFinal = false;         // 🔹 Si se activa al final
+    public GameObject objectToEnableAtEnd;      // 🔹 Objeto que se activa al acabar el diálogo/pregunta
+
     // Referencias a los scripts de movimiento y raycast
     public PlayerMove playerMoveScript;
     public RaycastSystem raycastScript;
@@ -176,6 +179,13 @@ public class DialogueSystem : MonoBehaviour
             objectToDisableAtEnd.SetActive(false);
             Debug.Log("Objeto final inactivado al terminar el diálogo.");
         }
+
+        // 🔹 Activar objeto final si está configurado
+        if (activarAlFinal && objectToEnableAtEnd != null)
+        {
+            objectToEnableAtEnd.SetActive(true);
+            Debug.Log("Objeto final ACTIVADO al terminar el diálogo.");
+        }
     }
 
     private void UnfreezeSystems()
@@ -191,5 +201,3 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 }
-
-
