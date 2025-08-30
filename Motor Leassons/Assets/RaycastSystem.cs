@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
@@ -6,9 +6,14 @@ using System.Collections.Generic;
 [System.Serializable]
 public class TagObjectPair
 {
-    public string tag;          // El Tag que se busca
-    public GameObject target;   // El GameObject que se activar�
-    [HideInInspector] public bool activated = false; // Control interno para evitar reactivaciones
+    public string tag;          // Tag a detectar
+    public GameObject target;   // Objeto que se activará al hacer clic
+    public GameObject NoCheck;  // UI al mirar el tag (antes del clic)
+    public GameObject Check;    // UI de completado (tras re-entrar luego del clic)
+
+    [HideInInspector] public bool activated = false;         // Fue clickeado
+    [HideInInspector] public bool waitingForReenter = false; // Espera salir y re-entrar
+    [HideInInspector] public bool exitedAfterClick = false;  // Ya salió al menos 1 vez tras el clic
 }
 
 public class RaycastSystem : MonoBehaviour
@@ -18,6 +23,8 @@ public class RaycastSystem : MonoBehaviour
     public float rayDistance = 10f;
     private Texture2D centerPointTexture;
     private string currentTag = "";
+    private string lastTag = "";
+    private bool showPointer = true;
 
     [Header("UI")]
     public TextMeshProUGUI tagText;
@@ -37,7 +44,19 @@ public class RaycastSystem : MonoBehaviour
     void Start()
     {
         CreateCenterPoint();
-        UpdateUniqueTagsCount(); // Inicializa UI
+        UpdateUniqueTagsCount();
+
+        foreach (var pair in tagObjectPairs)
+        {
+            if (pair.NoCheck != null) pair.NoCheck.SetActive(false);
+            if (pair.Check != null) pair.Check.SetActive(false);
+            pair.activated = false;
+            pair.waitingForReenter = false;
+            pair.exitedAfterClick = false;
+        }
+
+        lastTag = "";
+        UpdateCursorState();
     }
 
     void Update()
@@ -48,6 +67,8 @@ public class RaycastSystem : MonoBehaviour
             CheckForClick();
         }
 
+        UpdateCursorState();
+
         if (canActivateWin && Input.GetKeyDown(KeyCode.Space))
         {
             LoadIntroScene();
@@ -56,10 +77,13 @@ public class RaycastSystem : MonoBehaviour
 
     void UpdateRaycastTag()
     {
-        Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        // ——— Raycast desde el centro de la cámara
+        Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f));
         RaycastHit hit;
+        bool hitSomething = Physics.Raycast(ray, out hit, rayDistance);
 
-        if (Physics.Raycast(ray, out hit, rayDistance))
+        // ——— Detectar tag actual
+        if (hitSomething)
         {
             currentTag = hit.collider.tag;
             tagText.text = "Parte: " + currentTag;
@@ -70,8 +94,45 @@ public class RaycastSystem : MonoBehaviour
             tagText.text = "Parte: None";
         }
 
+        // ——— Apagar todos los NoCheck y Check (se recalculan cada frame)
+        foreach (var pair in tagObjectPairs)
+        {
+            if (pair.NoCheck != null) pair.NoCheck.SetActive(false);
+            if (pair.Check != null) pair.Check.SetActive(false);
+        }
+
+        // ——— Lógica al mirar un tag conocido
+        bool tagEncontrado = false;
+        if (!string.IsNullOrEmpty(currentTag))
+        {
+            var activePair = tagObjectPairs.Find(p => p.tag == currentTag);
+            if (activePair != null)
+            {
+                tagEncontrado = true;
+
+                if (!activePair.activated)
+                {
+                    // Antes del clic → mostrar NoCheck
+                    if (activePair.NoCheck != null) activePair.NoCheck.SetActive(true);
+                }
+                else
+                {
+                    // Después de clic → Check se comporta como NoCheck
+                    if (activePair.Check != null) activePair.Check.SetActive(true);
+                }
+            }
+        }
+
+        // ——— Pointer visible solo si no miramos un tag válido
+        showPointer = !tagEncontrado;
+
+        // ——— Debug visual del raycast
         Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red);
+
+        // ——— Guardar tag actual como "último tag" para el próximo frame
+        lastTag = currentTag;
     }
+
 
     void CheckForClick()
     {
@@ -83,7 +144,6 @@ public class RaycastSystem : MonoBehaviour
                 UpdateUniqueTagsCount();
             }
 
-            // Buscar en la lista si hay un objeto con ese Tag
             foreach (var pair in tagObjectPairs)
             {
                 if (pair.tag == currentTag && !pair.activated)
@@ -100,8 +160,18 @@ public class RaycastSystem : MonoBehaviour
         if (pair.target != null && !pair.target.activeSelf)
         {
             pair.target.SetActive(true);
-            pair.activated = true;
         }
+
+        // Marcar activado y preparar “esperar re-entrada”
+        pair.activated = true;
+        pair.waitingForReenter = true;
+        pair.exitedAfterClick = false;
+
+        // Apagar NoCheck inmediatamente tras el clic
+        if (pair.NoCheck != null) pair.NoCheck.SetActive(false);
+
+        // NO encendemos Check aquí; se encenderá cuando el ray vuelva a tocar el objeto
+        if (pair.Check != null) pair.Check.SetActive(false);
     }
 
     void UpdateUniqueTagsCount()
@@ -110,9 +180,9 @@ public class RaycastSystem : MonoBehaviour
 
         if (uniqueTags.Count >= tagObjectPairs.Count)
         {
-            FinalUI.SetActive(true);
+            if (FinalUI != null) FinalUI.SetActive(true);
             canActivateWin = true;
-            Debug.Log("�Has activado todos los objetos requeridos! Presiona espacio para cambiar de escena.");
+            Debug.Log("¡Has activado todos los objetos requeridos! Presiona espacio para cambiar de escena.");
         }
     }
 
@@ -130,10 +200,28 @@ public class RaycastSystem : MonoBehaviour
 
     void OnGUI()
     {
+        // Si el pointer está desactivado o el sistema está congelado → no dibujar
+        if (!showPointer || isSystemFrozen) return;
+
         float pointSize = 8f;
-        float x = (Screen.width / 2) - (pointSize / 2);
-        float y = (Screen.height / 2) - (pointSize / 2);
+        float x = (Screen.width / 2f) - (pointSize / 2f);
+        float y = (Screen.height / 2f) - (pointSize / 2f);
 
         GUI.DrawTexture(new Rect(x, y, pointSize, pointSize), centerPointTexture);
+    }
+
+
+    void UpdateCursorState()
+    {
+        if (isSystemFrozen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }

@@ -13,6 +13,7 @@ TagManager:
   - Ruedas
   - Radiador
   - Cadena
+  - Casco
   layers:
   - Default
   - TransparentFX
