@@ -39,7 +39,7 @@ public class RaycastSystem : MonoBehaviour
     public List<TagObjectPair> tagObjectPairs = new List<TagObjectPair>();
 
     private HashSet<string> uniqueTags = new HashSet<string>();
-    private bool canActivateWin = false;
+    public bool canActivateWin = false;
 
     void Start()
     {
@@ -69,10 +69,10 @@ public class RaycastSystem : MonoBehaviour
 
         UpdateCursorState();
 
-        if (canActivateWin && Input.GetKeyDown(KeyCode.Space))
+        /*if (canActivateWin && Input.GetKeyDown(KeyCode.Space))
         {
             LoadIntroScene();
-        }
+        }*/
     }
 
     void UpdateRaycastTag()
@@ -141,7 +141,8 @@ public class RaycastSystem : MonoBehaviour
             if (!uniqueTags.Contains(currentTag))
             {
                 uniqueTags.Add(currentTag);
-                UpdateUniqueTagsCount();
+                // ya no dependemos únicamente de esto, pero lo dejamos si lo quieres mantener
+                //UpdateUniqueTagsCount(); // <- opcional dejar comentado
             }
 
             foreach (var pair in tagObjectPairs)
@@ -162,6 +163,16 @@ public class RaycastSystem : MonoBehaviour
             pair.target.SetActive(true);
         }
 
+        // Si el target tiene DialogueSystem, le asignamos este RaycastSystem
+        if (pair.target != null)
+        {
+            DialogueSystem ds = pair.target.GetComponentInChildren<DialogueSystem>();
+            if (ds != null)
+            {
+                ds.raycastScript = this; // importante para notificar luego
+            }
+        }
+
         // Marcar activado y preparar “esperar re-entrada”
         pair.activated = true;
         pair.waitingForReenter = true;
@@ -174,17 +185,40 @@ public class RaycastSystem : MonoBehaviour
         if (pair.Check != null) pair.Check.SetActive(false);
     }
 
-    void UpdateUniqueTagsCount()
+    /// <summary>
+    /// Recalcula el número de targets cuyos DialogueSystem.ReadyToContinue == true
+    /// </summary>
+    public void RecalculateReadyCount()
     {
-        uniqueTagsText.text = "Chequeo: " + uniqueTags.Count + "/" + tagObjectPairs.Count;
+        UpdateUniqueTagsCount();
+    }
 
-        if (uniqueTags.Count >= tagObjectPairs.Count)
+    public void UpdateUniqueTagsCount()
+    {
+        int readyCount = 0;
+
+        foreach (var pair in tagObjectPairs)
         {
-            if (FinalUI != null) FinalUI.SetActive(true);
+            if (pair.target == null) continue;
+
+            // Buscamos DialogueSystem en el target (o hijos)
+            DialogueSystem dialogue = pair.target.GetComponentInChildren<DialogueSystem>();
+            if (dialogue != null && dialogue.ReadyToContinue)
+            {
+                readyCount++;
+            }
+        }
+
+        uniqueTagsText.text = "Chequeo: " + readyCount + "/" + tagObjectPairs.Count;
+
+        if (readyCount >= tagObjectPairs.Count)
+        {
+            //if (FinalUI != null) FinalUI.SetActive(true);
             canActivateWin = true;
-            Debug.Log("¡Has activado todos los objetos requeridos! Presiona espacio para cambiar de escena.");
+            Debug.Log("✅ ¡Todos los diálogos confirmados! Presiona espacio para cambiar de escena.");
         }
     }
+
 
     void LoadIntroScene()
     {

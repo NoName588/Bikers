@@ -25,6 +25,9 @@ public class DialogueSystem : MonoBehaviour
     public bool activarAlFinal = false;         // 🔹 Si se activa al final
     public GameObject objectToEnableAtEnd;      // 🔹 Objeto que se activa al acabar el diálogo/pregunta
 
+    [Header("Estado")]
+    public bool ReadyToContinue = false;        // 🔹 Se vuelve true al terminar el diálogo/pregunta
+
     // Referencias a los scripts de movimiento y raycast
     public PlayerMove playerMoveScript;
     public RaycastSystem raycastScript;
@@ -185,6 +188,21 @@ public class DialogueSystem : MonoBehaviour
         {
             objectToEnableAtEnd.SetActive(true);
             Debug.Log("Objeto final ACTIVADO al terminar el diálogo.");
+        }
+
+        // 🔹 Activar ReadyToContinue
+        ReadyToContinue = true;
+        Debug.Log("✅ ReadyToContinue = true (diálogo terminado).");
+
+        if (raycastScript != null)
+        {
+            raycastScript.RecalculateReadyCount();
+        }
+        else
+        {
+            // fallback: encontrarlo en la escena si no fue asignado (opcional)
+            RaycastSystem rs = FindObjectOfType<RaycastSystem>();
+            if (rs != null) rs.RecalculateReadyCount();
         }
     }
 
