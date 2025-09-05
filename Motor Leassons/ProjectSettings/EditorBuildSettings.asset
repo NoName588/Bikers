@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Carretera.unity
     guid: 8ff5f6324a30ed94dab7bc760d6b667f
+  - enabled: 1
+    path: Assets/Scenes/Intro.unity
+    guid: 9826609e5f04cae428c23c611afe9434
   m_configObjects: {}

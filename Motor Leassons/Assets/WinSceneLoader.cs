@@ -13,6 +13,7 @@ public class WinSceneLoader : MonoBehaviour
     [Header("Animators")]
     public Animator M_animator;
     public Animator W_animator;
+    public Animator Fade_animator;
 
     [Header("Tiempo entre animaciones y escena")]
     public float waitBetweenAnims = 2f; // segundos entre cada animación
@@ -39,6 +40,11 @@ public class WinSceneLoader : MonoBehaviour
         // Segunda animación
         if (W_animator != null)
             W_animator.SetTrigger("TrMission");
+        yield return new WaitForSeconds(waitBeforeScene);
+
+        if (Fade_animator != null)
+            Fade_animator.SetTrigger("TrFade");
+
         yield return new WaitForSeconds(waitBeforeScene);
 
         // Cambio de escena

@@ -244,6 +244,28 @@ public class RaycastSystem : MonoBehaviour
         GUI.DrawTexture(new Rect(x, y, pointSize, pointSize), centerPointTexture);
     }
 
+    // --- dentro de RaycastSystem.cs ---
+    public void SetFrozen(bool frozen)
+    {
+        // centralizamos la lógica de congelar/descongelar
+        isSystemFrozen = frozen;
+
+        // Asegurarnos de que el cursor y el estado del sistema se actualicen inmediatamente
+        UpdateCursorState();
+
+        // Si queremos, podemos también ocultar/mostrar elementos de UI relacionados:
+        // si se congela, apagamos todos los NoCheck/Check para evitar que queden UI visibles.
+        if (frozen)
+        {
+            foreach (var pair in tagObjectPairs)
+            {
+                if (pair.NoCheck != null) pair.NoCheck.SetActive(false);
+                if (pair.Check != null) pair.Check.SetActive(false);
+            }
+        }
+
+        Debug.Log($"[RaycastSystem] SetFrozen({frozen}) llamado.");
+    }
 
     void UpdateCursorState()
     {
